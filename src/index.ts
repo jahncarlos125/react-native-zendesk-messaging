@@ -254,3 +254,7 @@ export function removeSubscription(subscription: EmitterSubscription): void {
 export function removeAllListeners(type: ZendeskEventType): void {
   eventEmitter.removeAllListeners(type);
 }
+
+export function identify(userInfo: { name?: string; email?: string }): void {
+  ZendeskMessaging.identify(userInfo);
+}

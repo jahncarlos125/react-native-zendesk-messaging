@@ -13,6 +13,8 @@ import com.facebook.react.modules.core.DeviceEventManagerModule
 import zendesk.android.events.ZendeskEvent
 import zendesk.android.pageviewevents.PageView
 import zendesk.messaging.android.DefaultMessagingFactory
+import zendesk.messaging.android.Zendesk
+import zendesk.messaging.android.VisitorInfo
 
 class ZendeskMessagingModule(private val reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
@@ -21,6 +23,20 @@ class ZendeskMessagingModule(private val reactContext: ReactApplicationContext) 
 
   override fun getName(): String {
     return NAME
+  }
+
+  fun identify(userInfo: ReadableMap) {
+    if (!initialized) return
+
+    val name = if (userInfo.hasKey("name")) userInfo.getString("name") else null
+    val email = if (userInfo.hasKey("email")) userInfo.getString("email") else null
+
+    val visitorInfo = zendesk.messaging.android.VisitorInfo.builder()
+      .withName(name)
+      .withEmail(email)
+      .build()
+
+    zendesk.messaging.android.Zendesk.instance.messaging.loginUser(visitorInfo)
   }
 
   private fun sendEvent(eventName: String, params: WritableMap?) {
